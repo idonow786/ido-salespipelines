@@ -41,10 +41,9 @@ const signin = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
+    // Simplified response with token directly in data
     const response = {
-      data: {
-        token
-      }
+      data: token
     };
 
     res.status(200).json(response);
