@@ -14,16 +14,16 @@ const signin = async (req, res) => {
       .select('+password');
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ data: 'Invalid credentials' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ data: 'Invalid credentials' });
     }
 
     if (!user.isActive) {
-      return res.status(403).json({ message: 'Account is inactive. Please contact an administrator.' });
+      return res.status(403).json({ data: 'Account is inactive. Please contact an administrator.' });
     }
 
     const token = jwt.sign(
@@ -49,7 +49,7 @@ const signin = async (req, res) => {
     res.status(200).json(response);
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    res.status(500).json({ data: 'Server error during login' });
   }
 };
 
