@@ -1,4 +1,3 @@
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -6,20 +5,11 @@ const SalesUser = require('../../model/Sales_user');
 
 dotenv.config();
 
-
-
-
-
-
-
-
-
 const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const lowercaseEmail = email.toLowerCase();
 
-    // Check SalesUser
     const user = await SalesUser.findOne({ email: { $regex: new RegExp(`^${lowercaseEmail}$`, 'i') } })
       .select('+password');
 
@@ -32,7 +22,6 @@ const signin = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Check if user is active
     if (!user.isActive) {
       return res.status(403).json({ message: 'Account is inactive. Please contact an administrator.' });
     }
@@ -53,16 +42,8 @@ const signin = async (req, res) => {
     await user.save();
 
     const response = {
-      message: 'Login successful',
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        fullName: user.fullName,
-        department: user.department || '',
-        companyActivity: user.companyActivity || 'sales'
+      data: {
+        token
       }
     };
 
@@ -72,9 +53,5 @@ const signin = async (req, res) => {
     res.status(500).json({ message: 'Server error during login' });
   }
 };
-
-
-
-
 
 module.exports = { signin };
